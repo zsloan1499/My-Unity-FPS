@@ -210,6 +210,30 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dcca7c57cb3286c4494c5896661f4568, type: 3}
+--- !u!1 &767598761 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4482835842855964748, guid: dcca7c57cb3286c4494c5896661f4568, type: 3}
+  m_PrefabInstance: {fileID: 767598760}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &767598762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767598761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dfe6000278aee744a7f59ad2341c5c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gunName: Silencer
+  ammoCount: 10
+  magazineSize: 0
+  fireRate: 0.7
+  damage: 25
+  headshotDamage: 0
+  aimTime: 0.8
 --- !u!1001 &1148291305
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -267,6 +291,30 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cac4bdde29454e248b46b6e981d5c392, type: 3}
+--- !u!1 &1148291306 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4966417064010627097, guid: cac4bdde29454e248b46b6e981d5c392, type: 3}
+  m_PrefabInstance: {fileID: 1148291305}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1148291307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1148291306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3c6f5060f2c2884da8ce88f458523c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gunName: Deagle
+  ammoCount: 15
+  magazineSize: 0
+  fireRate: 0.5
+  damage: 20
+  headshotDamage: 0
+  aimTime: 1
 --- !u!1 &1167020810
 GameObject:
   m_ObjectHideFlags: 0
@@ -500,6 +548,30 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5d33538f38e49f4489638f960c3178aa, type: 3}
+--- !u!1 &1775157763 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5996101148732907040, guid: 5d33538f38e49f4489638f960c3178aa, type: 3}
+  m_PrefabInstance: {fileID: 1775157762}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1775157764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1775157763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f8b530583e02cd44bac0908c67d8a93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gunName: Glock
+  ammoCount: 10
+  magazineSize: 0
+  fireRate: 0.7
+  damage: 25
+  headshotDamage: 0
+  aimTime: 0.8
 --- !u!1001 &1827166597
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -557,3 +629,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1ff4b56d526aa7041bf20446f54338c7, type: 3}
+--- !u!1 &1827166598 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2255526918990295541, guid: 1ff4b56d526aa7041bf20446f54338c7, type: 3}
+  m_PrefabInstance: {fileID: 1827166597}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1827166599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1827166598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 102d0e7c290f39540b76e98a7455ded8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gunName: Revolver
+  ammoCount: 10
+  magazineSize: 0
+  fireRate: 0.7
+  damage: 25
+  headshotDamage: 0
+  aimTime: 0.8
