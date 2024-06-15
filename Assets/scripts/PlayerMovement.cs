@@ -55,13 +55,25 @@ public class PlayerMovement : MonoBehaviour
     //is the player crouched
     private bool isRunning = false;
 
+    private bool isADS = false;
+    public int ADSmovementSpeed;
+
     public enum MovementState{IDLE, WALKING, RUNNING, JUMPING, FALLING, CROUCHING }
 
     private MovementState currentState;
 
+    //refer to the gun object so we can move it later
+    public Transform Glock;
+
+    private Vector3 originalPosition;
+
+    public Vector3 ADSposition = new Vector3(0f,1f,0f);
+
     // starts when the scene starts
     void Start()
     {
+        //moves gun to default position
+        originalPosition = Glock.localPosition;
         // initializes the character controller
         characterController = GetComponent<CharacterController>();
         
@@ -77,11 +89,34 @@ public class PlayerMovement : MonoBehaviour
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
 
-        // Checks to see if player is running or not
-        isRunning = Input.GetKey(KeyCode.LeftShift);
-        if (isRunning == true)
+        //check to see if player is aiming down sights
+        Input.GetMouseButton(0);
+        if (Input.GetMouseButton(0))
         {
-            currentState = MovementState.RUNNING;
+            if(!isRunning)
+            {
+                isADS = true;
+                Glock.localPosition = ADSposition;
+            }
+        }
+        else if(Input.GetMouseButtonUp(0))
+        {
+            isADS = false;
+            Glock.localPosition = originalPosition;
+        }
+
+        // Checks to see if player is running or not
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            if (!isADS) // Only allow running if not ADS
+            {
+                isRunning = true;
+                currentState = MovementState.RUNNING;
+            }
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            isRunning = false;
         }
 
         // Calculate movement speed based on running or walking
