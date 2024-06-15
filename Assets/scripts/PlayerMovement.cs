@@ -58,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isADS = false;
     public int ADSmovementSpeed;
 
-    public enum MovementState{IDLE, WALKING, RUNNING, JUMPING, FALLING, CROUCHING }
+    public enum MovementState{IDLE, WALKING, RUNNING, JUMPING, FALLING, CROUCHING}
 
     private MovementState currentState;
 
@@ -90,22 +90,20 @@ public class PlayerMovement : MonoBehaviour
         Vector3 right = transform.TransformDirection(Vector3.right);
 
         //check to see if player is aiming down sights
-        Input.GetMouseButton(0);
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
         {
             if(!isRunning)
             {
                 isADS = true;
-                Glock.localPosition = ADSposition;
+                currentState = MovementState.IDLE;
             }
+
         }
-        else if(Input.GetMouseButtonUp(0))
+        else if (Input.GetMouseButtonUp(0))
         {
             isADS = false;
-            Glock.localPosition = originalPosition;
         }
 
-        // Checks to see if player is running or not
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             if (!isADS) // Only allow running if not ADS
@@ -117,6 +115,15 @@ public class PlayerMovement : MonoBehaviour
         else if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             isRunning = false;
+        }
+
+        if (isADS == true)
+        {
+            Glock.localPosition = ADSposition;
+        }
+        else
+        {
+            Glock.localPosition = originalPosition;
         }
 
         // Calculate movement speed based on running or walking
