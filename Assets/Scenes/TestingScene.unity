@@ -1033,6 +1033,14 @@ PrefabInstance:
       propertyPath: Glock
       value: 
       objectReference: {fileID: 636680869}
+    - target: {fileID: 9042559117993037443, guid: 22c5fb0539e98f94889351d1426c6a4d, type: 3}
+      propertyPath: ADSposition.y
+      value: -0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 9042559117993037443, guid: 22c5fb0539e98f94889351d1426c6a4d, type: 3}
+      propertyPath: ADSposition.z
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 9042559117993037445, guid: 22c5fb0539e98f94889351d1426c6a4d, type: 3}
       propertyPath: m_RootOrder
       value: 7

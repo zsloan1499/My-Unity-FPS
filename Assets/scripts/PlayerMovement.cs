@@ -67,7 +67,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 originalPosition;
 
-    public Vector3 ADSposition = new Vector3(0f,1f,0f);
+    public Vector3 ADSposition =  new Vector3(0f,-0.6f,0f);
 
     // starts when the scene starts
     void Start()
