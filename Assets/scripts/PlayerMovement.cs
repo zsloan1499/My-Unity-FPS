@@ -6,11 +6,8 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
-    // reference to player camera, need to move camera into it
+    // reference to player camera
     public Camera playerCamera;
-
-    //where to keep track of our states
-    //public Text StateTracker;
 
     // walk speed
     public float walkSpeed = 6f;
@@ -22,10 +19,10 @@ public class PlayerMovement : MonoBehaviour
     public float jumpPower = 1f;
     public float wallJumpPower = 2f;
 
-    //force of gravity
+    // force of gravity
     public float gravity = 9.81f;
 
-    //how fast the camera snaps with the mouse
+    // how fast the camera snaps with the mouse
     public float lookSpeed = 2f;
 
     // look up and down limit
@@ -34,12 +31,11 @@ public class PlayerMovement : MonoBehaviour
     // height of character when not crouched
     public float defaultHeight = 2f;
 
-   // character height crouched 
+    // character height crouched 
     public float crouchHeight = 1f;
 
     // crouched movement speed
     public float crouchSpeed = 3f;
-
 
     // keeps track of movement direction using a vector
     private Vector3 moveDirection = Vector3.zero;
@@ -47,61 +43,64 @@ public class PlayerMovement : MonoBehaviour
     // tracks the rotation of camera
     private float rotationX = 0;
 
-    // refers ti the character controller component
+    // refers to the character controller component
     private CharacterController characterController;
 
-    // is the player allowed to move?s
+    // is the player allowed to move?
     private bool canMove = true;
-    //is the player crouched
+
+    // is the player crouched
     private bool isRunning = false;
 
     private bool isADS = false;
     public int ADSmovementSpeed;
 
-    public enum MovementState{IDLE, WALKING, RUNNING, JUMPING, FALLING, CROUCHING}
+    public enum MovementState { IDLE, WALKING, RUNNING, JUMPING, FALLING, CROUCHING }
 
     private MovementState currentState;
 
-    //refer to the gun object so we can move it later
+    // refer to the gun object so we can move it later
     public Transform Glock;
 
     private Vector3 originalPosition;
+    private float aimElapsedTime = 0f;
 
-    public Vector3 ADSposition =  new Vector3(0f,-0.6f,0f);
+    public Vector3 ADSposition = new Vector3(0f, -0.6f, 0f);
+    public float aimTime = 0.25f; // Time to aim in seconds
 
     // starts when the scene starts
     void Start()
     {
-        //moves gun to default position
+        // moves gun to default position
         originalPosition = Glock.localPosition;
         // initializes the character controller
         characterController = GetComponent<CharacterController>();
-        
-        //locks and hides the cursor in the middle of the screen 
+
+        // locks and hides the cursor in the middle of the screen 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         currentState = MovementState.IDLE;
     }
 
-   void Update()
+    void Update()
     {
-        //StateTracker.text = currentState.ToString();
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
 
-        //check to see if player is aiming down sights
+        // check to see if player is aiming down sights
         if (Input.GetMouseButtonDown(0))
         {
-            if(!isRunning)
+            if (!isRunning)
             {
                 isADS = true;
                 currentState = MovementState.IDLE;
+                aimElapsedTime = 0f;
             }
-
         }
         else if (Input.GetMouseButtonUp(0))
         {
             isADS = false;
+            aimElapsedTime = 0f;
         }
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
@@ -117,13 +116,19 @@ public class PlayerMovement : MonoBehaviour
             isRunning = false;
         }
 
+        // Calculate gun position based on ADS state and aim time
         if (isADS == true)
         {
-            Glock.localPosition = ADSposition;
+            aimElapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(aimElapsedTime / aimTime);
+            // start position, end position, and then the amount of time it takes for the object to move from A to B
+            Glock.localPosition = Vector3.Lerp(originalPosition, ADSposition, t);
         }
         else
         {
-            Glock.localPosition = originalPosition;
+            aimElapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(aimElapsedTime / aimTime);
+            Glock.localPosition = Vector3.Lerp(ADSposition, originalPosition, t);
         }
 
         // Calculate movement speed based on running or walking
@@ -136,7 +141,7 @@ public class PlayerMovement : MonoBehaviour
         // Handle jumping and gravity
         if (characterController.isGrounded)
         {
-            //Player cannot jump from crouched
+            // Player cannot jump from crouched
             if (Input.GetButton("Jump") && canMove && currentState != MovementState.CROUCHING)
             {
                 moveDirection.y = jumpPower; // Apply jump force
@@ -168,8 +173,7 @@ public class PlayerMovement : MonoBehaviour
         moveDirection.x = horizontalMove.x;
         moveDirection.z = horizontalMove.z;
 
-
-        //crouch mechanic is we only want to be crouched when holding the button
+        // crouch mechanic is we only want to be crouched when holding the button
         if (Input.GetKey(KeyCode.R) && canMove)
         {
             characterController.height = crouchHeight;
@@ -205,5 +209,4 @@ public class PlayerMovement : MonoBehaviour
     {
         return currentState;
     }
-
 }
