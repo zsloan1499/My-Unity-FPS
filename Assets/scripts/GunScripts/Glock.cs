@@ -7,6 +7,11 @@ public class Glock : Pistol
     private LineRenderer lineRenderer;
     public float maxRange = 1000f;
 
+    public float shootTime = 0.2f;
+    public float timesincelastshot = 0f;
+
+    public Camera mainCamera;
+
     void Start()
     {
         try
@@ -15,7 +20,7 @@ public class Glock : Pistol
             lineRenderer = GetComponent<LineRenderer>();
             if (lineRenderer != null)
             {
-                Debug.LogWarning("LineRenderer is already attached to the GameObject.");
+                //Debug.LogWarning("LineRenderer is already attached to the GameObject.");
                 return;
             }
 
@@ -23,7 +28,7 @@ public class Glock : Pistol
             lineRenderer = gameObject.AddComponent<LineRenderer>();
             if (lineRenderer == null)
             {
-                Debug.LogError("LineRenderer could not be added to the GameObject. GameObject name: " + gameObject.name);
+                //Debug.LogError("LineRenderer could not be added to the GameObject. GameObject name: " + gameObject.name);
                 return;
             }
 
@@ -32,7 +37,7 @@ public class Glock : Pistol
             lineRenderer.material = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply"));
             if (lineRenderer.material == null)
             {
-                Debug.LogError("Material for LineRenderer could not be found.");
+                //Debug.LogError("Material for LineRenderer could not be found.");
                 return;
             }
 
@@ -41,20 +46,22 @@ public class Glock : Pistol
             lineRenderer.positionCount = 2;
             lineRenderer.enabled = false; // Initially disable the line renderer
 
-            Debug.Log("LineRenderer initialized successfully.");
+            //Debug.Log("LineRenderer initialized successfully.");
         }
         catch (System.Exception e)
         {
-            Debug.LogError("Exception in Start(): " + e.Message);
+            //Debug.LogError("Exception in Start(): " + e.Message);
         }
     }
 
     void Update()
     {
+        
         // Check if the right mouse button is held down
         if (Input.GetMouseButton(1))
         {
             Shoot();
+            timesincelastshot += Time.deltaTime;
         }
     }
 
@@ -65,9 +72,22 @@ public class Glock : Pistol
         // Additional logic for Glock shooting
         Debug.Log("Glock specific shooting logic executed.");
         
-        // Perform a raycast for hitscan
-        Ray ray = new Ray(transform.position, transform.forward);
-        RaycastHit hit;
+        if (mainCamera == null)
+        {
+            Debug.LogError("Main Camera reference is not assigned.");
+            return;
+        }
+
+        // Get the position of the Glock
+        Vector3 glockPosition = transform.position;
+
+        // Calculate direction towards the center of the screen (crosshair)
+        Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+
+        if(timesincelastshot > fireRate){
+            timesincelastshot = 0f;
+            Ray ray = mainCamera.ScreenPointToRay(screenCenter);
+            RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, maxRange))
         {
@@ -76,8 +96,8 @@ public class Glock : Pistol
             // Ensure the line renderer is properly set before using it
             if (lineRenderer != null)
             {
-                // Draw the line renderer to the hit point
-                lineRenderer.SetPosition(0, ray.origin);
+                // Draw the line renderer from the Glock position to the hit point
+                lineRenderer.SetPosition(0, glockPosition);
                 lineRenderer.SetPosition(1, hit.point);
             }
         }
@@ -86,13 +106,16 @@ public class Glock : Pistol
             // Ensure the line renderer is properly set before using it
             if (lineRenderer != null)
             {
-                // Draw the line renderer to the max range if nothing is hit
-                lineRenderer.SetPosition(0, ray.origin);
-                lineRenderer.SetPosition(1, ray.origin + ray.direction * maxRange);
+                // Draw the line renderer from the Glock position in the ray direction to max range
+                lineRenderer.SetPosition(0, glockPosition);
+                lineRenderer.SetPosition(1, glockPosition + ray.direction * maxRange);
             }
         }
 
         StartCoroutine(ShowLineRenderer());
+            
+        }
+    
     }
 
     private IEnumerator ShowLineRenderer()
@@ -100,10 +123,10 @@ public class Glock : Pistol
         if (lineRenderer != null)
         {
             lineRenderer.enabled = true;
-            Debug.Log("LineRenderer enabled.");
+            //Debug.Log("LineRenderer enabled.");
             yield return new WaitForSeconds(0.1f); // Show the line for 0.1 seconds
             lineRenderer.enabled = false;
-            Debug.Log("LineRenderer disabled.");
+            //Debug.Log("LineRenderer disabled.");
         }
     }
 }
