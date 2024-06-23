@@ -174,7 +174,7 @@ public class PlayerMovement : MonoBehaviour
         moveDirection.z = horizontalMove.z;
 
         // crouch mechanic is we only want to be crouched when holding the button
-        if (Input.GetKey(KeyCode.R) && canMove)
+        if (Input.GetKey(KeyCode.C) && canMove)
         {
             characterController.height = crouchHeight;
             walkSpeed = crouchSpeed;

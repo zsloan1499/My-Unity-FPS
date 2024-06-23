@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Glock : Pistol
 {
@@ -9,6 +10,9 @@ public class Glock : Pistol
 
     public float shootTime = 0.2f;
     public float timesincelastshot = 0f;
+
+    int tempammo = 0;
+
 
     public Camera mainCamera;
 
@@ -56,66 +60,113 @@ public class Glock : Pistol
 
     void Update()
     {
-        
         // Check if the right mouse button is held down
         if (Input.GetMouseButton(1))
         {
             Shoot();
             timesincelastshot += Time.deltaTime;
         }
+
+        // Check if the right mouse button is held down
+        if (Input.GetKeyDown(KeyCode.R) && isReloading == false)
+        {
+            Reload();
+        }
+        if (isReloading == true)
+        {
+            reloadTime -= Time.deltaTime;
+        }
+        if (reloadTime < 0 )
+        {
+            isReloading = false;
+            reloadTime = 2;
+        }
     }
+
 
     // Override Shoot method specific to this type of pistol
     public override void Shoot()
     {
-        base.Shoot();
+        //base.Shoot();
         // Additional logic for Glock shooting
-        Debug.Log("Glock specific shooting logic executed.");
         
-        if (mainCamera == null)
-        {
-            Debug.LogError("Main Camera reference is not assigned.");
-            return;
-        }
 
-        // Get the position of the Glock
-        Vector3 glockPosition = transform.position;
+        // Get the position of the Glock and move it up by 10 units
+        Vector3 glockPosition = transform.position + new Vector3(-0.30f, 0.5f, 0f);
 
         // Calculate direction towards the center of the screen (crosshair)
         Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
-
-        if(timesincelastshot > fireRate){
-            timesincelastshot = 0f;
-            Ray ray = mainCamera.ScreenPointToRay(screenCenter);
-            RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, maxRange))
+        magazineCount = magazineCount - 1;
+        if (isReloading == false)
         {
-            Debug.Log("Hit: " + hit.transform.name);
-            
-            // Ensure the line renderer is properly set before using it
-            if (lineRenderer != null)
+
+            if (magazineCount > 0 || isReloading == false)
             {
-                // Draw the line renderer from the Glock position to the hit point
-                lineRenderer.SetPosition(0, glockPosition);
-                lineRenderer.SetPosition(1, hit.point);
+
+                if (timesincelastshot > fireRate)
+                {
+
+                    Debug.Log("Glock specific shooting logic executed.");
+                    timesincelastshot = 0f;
+                    Ray ray = mainCamera.ScreenPointToRay(screenCenter);
+                    RaycastHit hit;
+
+                    if (Physics.Raycast(ray, out hit, maxRange))
+                    {
+                        Debug.Log("Hit: " + hit.transform.name);
+            
+                        // Ensure the line renderer is properly set before using it
+                        if (lineRenderer != null)
+                        {
+                            // Draw the line renderer from the Glock position to the hit point
+                            lineRenderer.SetPosition(0, glockPosition);
+                            lineRenderer.SetPosition(1, hit.point);
+                        }
+                    }
+                    else
+                    {
+                        // Ensure the line renderer is properly set before using it
+                        if (lineRenderer != null)
+                        {
+                            // Draw the line renderer from the Glock position in the ray direction to max range
+                            lineRenderer.SetPosition(0, glockPosition);
+                            lineRenderer.SetPosition(1, glockPosition + ray.direction * maxRange);
+                        }
+                    }
+                    StartCoroutine(ShowLineRenderer());
+                }
+            }
+            else
+            {
+                Reload();
+            
             }
         }
-        else
+        
+        
+    }
+
+    public override void Reload(){
+        isReloading = true;
+        tempammo = magazineSize - magazineCount;
+        if (ammoCount >= tempammo){
+
+            ammoCount = ammoCount - tempammo;
+            magazineCount = magazineCount + tempammo;
+
+
+        }
+        else if(ammoCount < tempammo){
+
+            magazineCount = magazineCount + ammoCount;
+            ammoCount = ammoCount - tempammo;
+
+
+        }else if (magazineCount == magazineSize)
         {
-            // Ensure the line renderer is properly set before using it
-            if (lineRenderer != null)
-            {
-                // Draw the line renderer from the Glock position in the ray direction to max range
-                lineRenderer.SetPosition(0, glockPosition);
-                lineRenderer.SetPosition(1, glockPosition + ray.direction * maxRange);
-            }
+            isReloading = false;
         }
 
-        StartCoroutine(ShowLineRenderer());
-            
-        }
-    
     }
 
     private IEnumerator ShowLineRenderer()
