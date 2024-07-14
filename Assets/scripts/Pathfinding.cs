@@ -5,15 +5,22 @@ public class Pathfinding : MonoBehaviour
 {
     GridManager gridManager;
 
-    void Awake()
+    void Start()
     {
-        gridManager = GetComponent<GridManager>();
+        gridManager = FindObjectOfType<GridManager>();
+        Debug.Log("Pathfinding Start method called");
     }
 
     public List<Node> FindPath(Vector3 startPos, Vector3 targetPos)
     {
         Node startNode = gridManager.NodeFromWorldPoint(startPos);
         Node targetNode = gridManager.NodeFromWorldPoint(targetPos);
+
+        if (startNode == null || targetNode == null)
+        {
+            Debug.Log($"Start node or target node is null. StartNode: {startNode}, TargetNode: {targetNode}");
+            return null;
+        }
 
         PriorityQueue<Node> openSet = new PriorityQueue<Node>(new NodeComparer());
         HashSet<Node> closedSet = new HashSet<Node>();
@@ -25,6 +32,7 @@ public class Pathfinding : MonoBehaviour
 
             if (currentNode == targetNode)
             {
+                Debug.Log("Path found");
                 return RetracePath(startNode, targetNode);
             }
 
@@ -52,6 +60,7 @@ public class Pathfinding : MonoBehaviour
             }
         }
 
+        Debug.Log("Path not found");
         return null;
     }
 
@@ -67,6 +76,7 @@ public class Pathfinding : MonoBehaviour
         }
 
         path.Reverse();
+        Debug.Log("Retracing path. Path length: " + path.Count);
         return path;
     }
 
@@ -82,18 +92,5 @@ public class Pathfinding : MonoBehaviour
             return 14 * Mathf.Min(dstX, dstZ) + 10 * (dstY - Mathf.Min(dstX, dstZ));
         else
             return 14 * Mathf.Min(dstX, dstY) + 10 * (dstZ - Mathf.Min(dstX, dstY));
-    }
-}
-
-public class NodeComparer : IComparer<Node>
-{
-    public int Compare(Node x, Node y)
-    {
-        int compare = x.fCost.CompareTo(y.fCost);
-        if (compare == 0)
-        {
-            compare = x.hCost.CompareTo(y.hCost);
-        }
-        return compare;
     }
 }
