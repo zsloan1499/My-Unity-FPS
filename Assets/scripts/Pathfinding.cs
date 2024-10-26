@@ -22,27 +22,34 @@ public class Pathfinding : MonoBehaviour
             return null;
         }
 
-        PriorityQueue<Node> openSet = new PriorityQueue<Node>(new NodeComparer());
-        HashSet<Node> closedSet = new HashSet<Node>();
-        openSet.Enqueue(startNode);
+        List<Node> openSet = new List<Node>(); // Nodes to be evaluated
+        HashSet<Node> closedSet = new HashSet<Node>(); // Nodes already evaluated
+        openSet.Add(startNode); // Start pathfinding from the start node
 
         while (openSet.Count > 0)
         {
-            Node currentNode = openSet.Dequeue();
+            Node currentNode = openSet[0];
+            for (int i = 1; i < openSet.Count; i++)
+            {
+                if (openSet[i].fCost < currentNode.fCost || openSet[i].fCost == currentNode.fCost && openSet[i].hCost < currentNode.hCost)
+                {
+                    currentNode = openSet[i];
+                }
+            }
+
+            openSet.Remove(currentNode);
+            closedSet.Add(currentNode);
 
             if (currentNode == targetNode)
             {
-                Debug.Log("Path found");
-                return RetracePath(startNode, targetNode);
+                return RetracePath(startNode, targetNode); // Return the path once the target node is reached
             }
-
-            closedSet.Add(currentNode);
 
             foreach (Node neighbour in gridManager.GetNeighbours(currentNode))
             {
                 if (!neighbour.walkable || closedSet.Contains(neighbour))
                 {
-                    continue;
+                    continue; // Skip unwalkable nodes or those already evaluated
                 }
 
                 int newMovementCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour);
@@ -54,14 +61,14 @@ public class Pathfinding : MonoBehaviour
 
                     if (!openSet.Contains(neighbour))
                     {
-                        openSet.Enqueue(neighbour);
+                        openSet.Add(neighbour);
                     }
                 }
             }
         }
 
         Debug.Log("Path not found");
-        return null;
+        return null; // Return null if no path is found
     }
 
     List<Node> RetracePath(Node startNode, Node endNode)
@@ -77,7 +84,7 @@ public class Pathfinding : MonoBehaviour
 
         path.Reverse();
         Debug.Log("Retracing path. Path length: " + path.Count);
-        return path;
+        return path; // Return the retraced path
     }
 
     int GetDistance(Node nodeA, Node nodeB)
